@@ -1,0 +1,9 @@
+triggerpin = 27
+shutterpin = 17
+solenoidpin = 4
+
+sleep1=0.06
+sleep2=0.1
+sleep3=0.05
+sleep4=0.12
+sleep5=0.1
