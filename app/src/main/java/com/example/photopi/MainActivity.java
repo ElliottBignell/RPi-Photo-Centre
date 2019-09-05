@@ -26,6 +26,7 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    BluetoothService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Intent intent = new Intent(this, DisplayMessageActivity.class);
         Button btn = (Button) findViewById(R.id.btnFire);
-        btn.setText( "Fired!" );
+
+        if ( null != service ) {
+
+            service.send( "Button clicked" );
+            btn.setText( "Fired!" );
+        }
         // intent.putExtra(EXTRA_MESSAGE, message);
         // startActivity(intent);
     }
@@ -105,17 +111,18 @@ public class MainActivity extends AppCompatActivity {
                 Pattern pattern = Pattern.compile( id );
                 Matcher match = pattern.matcher( deviceName );
 
-                Log.e( "Bluetooth", "Matching patten" );
                 if ( match.matches() ) {
 
                     Button btn = (Button) findViewById(R.id.btnFire);
                     btn.setEnabled(true);
                     btn.setText( deviceName );
 
-                    Log.e( "Bluetooth", "Connecting" );
-                    ConnectThread thread = new ConnectThread( device );
+                    service = new BluetoothService();
 
-                    thread.run();
+                    Log.e( "Bluetooth", "Connecting" );
+                    ConnectThread thread = new ConnectThread( device, service );
+
+                    thread.start();
                 }
             }
         }
